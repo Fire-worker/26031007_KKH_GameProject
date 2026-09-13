@@ -17,6 +17,7 @@ StarterContent/
 
 ########################################
 # Visual Studio
+**/bin/
 _LIB/
 _OBJ/
 _bin/
