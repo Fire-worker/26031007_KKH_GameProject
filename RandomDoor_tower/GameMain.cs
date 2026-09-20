@@ -15,6 +15,9 @@ class GameMain : G2AppBase
 	private G2Texture? _leftHandImage;
 	private G2Texture? _rightHandImage;
 	private G2Font? _font;
+	private G2AudioSound? _titleBgm;
+	private G2AudioSound? _enterSound;
+	private G2AudioSound? _caveBgm;
 	private Form? _window;
 	private bool _startRequested = false;
 	private bool _gameStarted = false;
@@ -31,6 +34,11 @@ class GameMain : G2AppBase
 		_rightHandImage = new G2Texture("resource/rightidle.png");
 		_font = new G2Font("Malgun Gothic", 32);
 
+		_titleBgm = new G2AudioSound("resource/audio/Simple_Lofi_Piano_Loop.wav");
+		_enterSound = new G2AudioSound("resource/audio/Piano_Ui (1).wav");
+		_caveBgm = new G2AudioSound("resource/audio/Cave.wav");
+		_titleBgm.Play(true); // 시작 화면 배경음 반복 재생
+
 		_window = Control.FromHandle(RenderTarget.Hwnd) as Form;
 		if (_window != null) _window.KeyDown += OnKeyDown;
 	}
@@ -44,12 +52,15 @@ class GameMain : G2AppBase
 		{
 			_gameStarted = true;
 			_startRequested = false;
+			_titleBgm?.Stop();
+			_enterSound?.Play(); // 진입 효과음은 한 번만 재생
+			_caveBgm?.Play(true); // 탑 내부 배경음 반복 재생
 		}
 	}
 
 	private void OnKeyDown(object? sender, KeyEventArgs e)
 	{
-		if (e.KeyCode == Keys.Enter && !e.Alt) _startRequested = true;
+		if (!_gameStarted && e.KeyCode == Keys.Enter && !e.Alt) _startRequested = true;
 	}
 
 	protected override void Render()
@@ -87,6 +98,9 @@ class GameMain : G2AppBase
 		_leftHandImage?.Dispose();
 		_rightHandImage?.Dispose();
 		_font?.Dispose();
+		_titleBgm?.Dispose();
+		_enterSound?.Dispose();
+		_caveBgm?.Dispose();
 		base.Dispose();
 	}
 }
